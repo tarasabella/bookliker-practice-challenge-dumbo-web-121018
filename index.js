@@ -26,15 +26,32 @@ document.addEventListener("DOMContentLoaded", function() {
         <img src = "${book.img_url}" class="book-img-url">
         <p class="book-description"> ${book.description} </p>
         <button type = "button" class="like-button"> LIKE </button>`
+
         showPanel.innerHTML = string;
+        showPanel.append(makeUsersList(book));
         showPanel.dataset.id = event.target.dataset.id;
       })
     }
   })
 
+  const makeUsersList = book => {
+    let usersList = document.createElement("ul")
+    usersList.className = "users-list"
+    book.users.forEach(user => {
+      let liString = `<li data-id="${user.id}">${user.username}</li>`;
+      usersList.innerHTML += liString;
+    })
+    return usersList;
+  }
+
   showPanel.addEventListener("click", event => {
     if (event.target.classList.contains("like-button")) {
       // console.log("like-button")
+
+      const usersList = document.querySelector(".users-list")
+
+
+
     fetch(`http://localhost:3000/books/${event.target.parentNode.dataset.id}`, {
       method: "PATCH",
       body: JSON.stringify({
@@ -42,6 +59,7 @@ document.addEventListener("DOMContentLoaded", function() {
         title: document.querySelector(".book-title").innerText,
         img_url: document.querySelector(".book-img-url").src,
         description: document.querySelector(".book-description").innerText
+        users: []
         // title: event.target.parentNode.querySelector()
       }),
       headers: {
